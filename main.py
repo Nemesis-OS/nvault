@@ -52,6 +52,15 @@ def parse_config():
         else:
             print("{}error{}: {} is not found.. either select a different partition or create a seperate partition".format(ANSI_CODES[0], ANSI_CODES[4], config.DRIVE))
             exit(1)
+    else:
+        print("{}error{}: drive is not defined so exiting".format(ANSI_CODES[0], ANSI_CODES[4]))
+        exit(1)
+
+    if config.MOUNTPOINT != '':
+        print("{}note{}: checking if {} exists..")
+        if isdir(config.MOUNTPOINT) == False:
+            print("{}warning{}: the mountpoint does not exist on the filesystem so creating it.".format(ANSI_CODES[2], ANSI_CODES[4]))
+            mkdir(config.MOUNTPOINT)
     
 
 try:
