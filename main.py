@@ -1,4 +1,4 @@
-from os import system
+from os import system, chdir
 from os.path import isfile, isdir
 from sys import argv, path
 from subprocess import check_output
@@ -31,7 +31,27 @@ def parse_config():
         return "UseFallBack"
 
     print("{}sucess{}: config found so setting the variables..".format(ANSI_CODES[1] , ANSI_CODES[4]))
+    chdir("/etc/nvault")
     path.append("/etc/nvault")
+    import config
+
+    if config.DRIVE != '':
+        print("{}note{}: checking if {} exists..".format(ANSI_CODES[3], ANSI_CODES[4], config.DRIVE))
+        drive_exists = False
+        drives = check_output('blkid').decode('utf-8').splitlines()
+        for i in range(0, len(drives)):
+            if config.DRIVE in drives[i]:
+                drive_exists = True
+                break
+            else:
+                continue
+
+        if drive_exists == True:
+            print("{}sucess{}: {} found".format(ANSI_CODES[1], ANSI_CODES[4], config.DRIVE))
+            pass
+        else:
+            print("{}error{}: {} is not found.. either select a different partition or create a seperate partition".format(ANSI_CODES[0], ANSI_CODES[4], config.DRIVE))
+            exit(1)
     
 
 try:
@@ -46,4 +66,3 @@ try:
 except KeyboardInterrupt:
     print("{} error{}: user pressed ctrl-c so exiting".format(ANSI_CODES[0], ANSI_CODES[4]))
     exit(1)
-
