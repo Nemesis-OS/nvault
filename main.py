@@ -1,4 +1,4 @@
-from os import system, chdir
+from os import system, chdir, mkdir
 from os.path import isfile, isdir
 from sys import argv, path
 from subprocess import check_output
@@ -57,12 +57,15 @@ def parse_config():
         exit(1)
 
     if config.MOUNTPOINT != '':
-        print("{}note{}: checking if {} exists..")
+        print("{}note{}: checking if {} exists..".format(ANSI_CODES[3], ANSI_CODES[4] , config.MOUNTPOINT))
         if isdir(config.MOUNTPOINT) == False:
             print("{}warning{}: the mountpoint does not exist on the filesystem so creating it.".format(ANSI_CODES[2], ANSI_CODES[4]))
             mkdir(config.MOUNTPOINT)
-    
-
+        else:
+            print("{}sucess{}: the mountpoint exists on the filesystem so continuing".format(ANSI_CODES[1], ANSI_CODES[4]))
+    else:
+        print("{}error{} no mountpoint is specified.. please specify a mountpoint".format(ANSI_CODES[0], ANSI_CODES[4]))
+        
 try:
     if __name__ == "__main__":
         if check_output('whoami') == b'root\n':
