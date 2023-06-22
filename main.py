@@ -65,6 +65,19 @@ def parse_config():
             print("{}sucess{}: the mountpoint exists on the filesystem so continuing".format(ANSI_CODES[1], ANSI_CODES[4]))
     else:
         print("{}error{} no mountpoint is specified.. please specify a mountpoint".format(ANSI_CODES[0], ANSI_CODES[4]))
+
+    if config.BACKUP_HOME == True or config.BACKUP_HOME == False and config.BACKUP_CACHE == True or config.BACKUP_CACHE == False and config.BACKUP_NEMESIS_PKG_DIR == True or BACKUP_NEMESIS_PKG_DIR == False and BACKUP_BUILD_CACHE == True or BACKUP_BUILD_CACHE == False and BACKUP_NEMESIS_HIST_SNAPSHOTS == True or BACKUP_NEMESIS_HIST_SNAPSHOTS == False:
+        print("{}note{}: configuring the other variables to determine somethibgs..".format(ANSI_CODES[3], ANSI_CODES[4]))
+        BACKUP_HOME = config.BACKUP_HOME
+        BACKUP_CACHE = config.BACKUP_CACHE
+        BACKUP_NEMESIS_HIST_SNAPSHOTS = config.BACKUP_NEMESIS_HIST_SNAPSHOTS
+        BACKUP_NEMESIS_PKG_DIR = config.BACKUP_NEMESIS_PKG_DIR
+        BACKUP_CONFIGS = config.BACKUP_CACHE
+        BACKUP_BUILD_CACHE = config.BACKUP_BUILD_CACHE
+        print("{}sucess{}: the variables were configured succesfully and configuration applied".format(ANSI_CODES[1], ANSI_CODES[4]))
+    else:
+        print("{}error{}: the rest other variables need to be either True or False.".format(ANSI_CODES[0], ANSI_CODES[4]))
+        exit(1)
         
 try:
     if __name__ == "__main__":
@@ -78,3 +91,5 @@ try:
 except KeyboardInterrupt:
     print("{} error{}: user pressed ctrl-c so exiting".format(ANSI_CODES[0], ANSI_CODES[4]))
     exit(1)
+except NameError:
+    print("{}error{}: something went wrong!.. please check you config file for any errors/misspells".format(ANSI_CODES[0], ANSI_CODES[4]))
