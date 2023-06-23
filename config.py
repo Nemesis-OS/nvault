@@ -17,3 +17,7 @@ BACKUP_NEMESIS_HIST_SNAPSHOTS = True # you can backup your old nemesis-pkg snaps
 BACKUP_NEMESIS_PKG_DIR = True # your IPKGLIST, PKGLIST and config.py will be backed up
 
 BACKUP_BUILD_CACHE = True # your build cache or compiled programs will be saved so in reinstall you dont need to spent hours for compiling 
+
+INCLUDE_EXTRA_DIRS = [] # this variable is used to include some extra directories
+
+EXCULDE_EXTRA_DIRS = [] # this script is used to exclude directories that might be copied
