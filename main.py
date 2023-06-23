@@ -19,6 +19,8 @@ BACKUP_CACHE = True
 BACKUP_NEMESIS_HIST_SNAPSHOTS = True
 BACKUP_NEMESIS_PKG_DIR = True
 BACKUP_BUILD_CACHE = True
+INCLUDE_EXTRA_DIRS = []
+EXCULDE_EXTRA_DIRS = []
 
 def parse_config():
     global DRIVE, MOUNTPOINT, BACKUP_HOME, BACKUP_CACHE, BACKUP_NEMESIS_HIST_SNAPSHOTS, BACKUP_BUILD_CACHE, BACKUP_NEMESIS_PKG_DIR
@@ -67,7 +69,7 @@ def parse_config():
         print("{}error{} no mountpoint is specified.. please specify a mountpoint".format(ANSI_CODES[0], ANSI_CODES[4]))
 
     if config.BACKUP_HOME == True or config.BACKUP_HOME == False and config.BACKUP_CACHE == True or config.BACKUP_CACHE == False and config.BACKUP_NEMESIS_PKG_DIR == True or config.BACKUP_NEMESIS_PKG_DIR == False and config.BACKUP_BUILD_CACHE == True or config.BACKUP_BUILD_CACHE == False and config.BACKUP_NEMESIS_HIST_SNAPSHOTS == True or config.BACKUP_NEMESIS_HIST_SNAPSHOTS == False and config.BACKUP_CONFIGS == True or config.BACKUP_CONFIGS == False:
-        print("{}note{}: configuring the other variables to determine somethibgs..".format(ANSI_CODES[3], ANSI_CODES[4]))
+        print("{}note{}: configuring the other variables to determine some settings..".format(ANSI_CODES[3], ANSI_CODES[4]))
         BACKUP_HOME = config.BACKUP_HOME
         BACKUP_CACHE = config.BACKUP_CACHE
         BACKUP_NEMESIS_HIST_SNAPSHOTS = config.BACKUP_NEMESIS_HIST_SNAPSHOTS
@@ -75,11 +77,32 @@ def parse_config():
         BACKUP_CONFIGS = config.BACKUP_CACHE
         BACKUP_BUILD_CACHE = config.BACKUP_BUILD_CACHE
         BACKUP_CONFIGS = config.BACKUP_CACHE
-        print("{}sucess{}: the variables were configured succesfully and configuration applied".format(ANSI_CODES[1], ANSI_CODES[4]))
+        print("{}sucess{}: the variables were configured succesfully so now we are configuring directories..".format(ANSI_CODES[1], ANSI_CODES[4]))
     else:
         print("{}error{}: the rest other variables need to be either True or False.".format(ANSI_CODES[0], ANSI_CODES[4]))
         exit(1)
-        
+
+    if len(config.INCLUDE_EXTRA_DIRS) == 0:
+        pass
+    else:
+        for i in range(0 , len(config.INCLUDE_EXTRA_DIRS)):
+            if isdir(config.INCLUDE_EXTRA_DIRS[i]) == True:
+                print("{}info{}: checking whether {} in / {}pass..{}".format(ANSI_CODES[3], ANSI_CODES[4], config.INCLUDE_EXTRA_DIRS[i], ANSI_CODES[1], ANSI_CODES[4]))
+            else:
+                print("{}error{}: {} not in / so exiting".format(ANSI_CODES[0], ANSI_CODES[4], config.INCLUDE_EXTRA_DIRS[i]))
+                exit(1)
+            
+    if len(config.EXCLUDE_EXTRA_DIRS) == 0:
+        pass
+    else:
+        for i in range(0 , len(config.EXCLUDE_EXTRA_DIRS)):
+            if isdir(config.INCLUDE_EXTRA_DIRS[i]) == True:
+                print("{}info{}: checking whether {} in / {}pass..{}".format(ANSI_CODES[3], ANSI_CODES[4], config.EXCLUDE_EXTRA_DIRS[i], ANSI_CODES[1], ANSI_CODES[4]))
+            else:
+                print("{}error{}: {} not in / so exiting".format(ANSI_CODES[0], ANSI_CODES[4], config.EXCLUDE_EXTRA_DIRS[i]))
+                exit(1)
+                    
+    
 try:
     if __name__ == "__main__":
         if check_output('whoami') == b'root\n':
@@ -92,5 +115,5 @@ try:
 except KeyboardInterrupt:
     print("{} error{}: user pressed ctrl-c so exiting".format(ANSI_CODES[0], ANSI_CODES[4]))
     exit(1)
-except NameError:
+except (NameError, AttributeError):
     print("{}error{}: something went wrong!.. please check you config file for any errors/misspells".format(ANSI_CODES[0], ANSI_CODES[4]))
