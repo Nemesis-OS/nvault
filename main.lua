@@ -9,10 +9,10 @@ config = {}
 -- if check_mountpoint().. see if mountpoint exists
 local function check_mountpoint(point)
   if not fs.exists(point) then
-    print("=> \x1b[1m\x1b[33mwarning:\x1b[0m mountpoint was not found so made it")
+    print("=> \x1b[1m\x1b[33mWARNING:\x1b[0m mountpoint was not found so made it")
     fs.mkdir(point)
   else
-    print("=> \x1b[32m\x1b[1msucess:\x1b[0m mountpoint found in system")
+    print("=> \x1b[32m\x1b[1mSUCESS:\x1b[0m mountpoint found in system")
   end
 end
 
@@ -35,22 +35,57 @@ end
 
 local function parse_config()
   if fs.exists(config_path) then
-    print("=> \x1b[1m\x1b[34mnote:\x1b[0m config found.. using config")
+    print("=> \x1b[1m\x1b[34mNOTE:\x1b[0m config found.. using config")
     loadfile(config_path, "t", config)()
   end
 
-  print("=> \x1b[34m\x1b[1mnote:\x1b[0m checking mountpoint")
+  print("=> \x1b[34m\x1b[1mNOTE:\x1b[0m checking mountpoint")
 
   if config.mountpoint ~= nil then
     check_mountpoint(config.mountpoint)
   else
-    print("=> \x1b[31m\x1b[1merror:\x1b[0m mountpoint is undefined")
+    print("=> \x1b[31m\x1b[1mCONFIG ERROR:\x1b[0m mountpoint is undefined")
+  end
+
+  if config.backup.home then
+      if type(config.backup.home) ~= "boolean" then
+	  print("=> \x1b[1m\x1b[31mCONFIG ERROR:\x1b[0m\x1b[1m \x1b[33mbackup.home\x1b[0m expected to be a boolean.")
+	  os.exit(1)
+      else
+	  print("=> \x1b[1m\x1b[34mNOTE:\x1b[0m\x1b[1m\x1b[33m /home\x1b[0m will be backed up.")
+      end
+  end
+
+  if config.directories then
+      if type(config.directories) ~= "table" then
+	  print("=> \x1b[1m\x1b[31mCONFIG ERROR: \x1b[33mconfig.directories\x1b[0m expected to be a table")
+	  os.exit(1)
+      end
+  else
+      print("=> \x1b[31m\x1b[1mCONFIG ERROR: \x1b[33mconfig.directories\x1b[0m not found in config")
+      os.exit(1)
+  end
+
+  if config.directories.include and type(config.directories.include) == "table" then
+      print("=> \x1b[34m\x1b[1mNOTE:\x1b[0m verifying the availability of optional backup directories")
+      for k, v in pairs(config.directories.include) do
+	  if not fs.isdirectory(v) then
+	      str = " -> looking for \x1b[33m\x1b[1m%s\x1b[0m.. \x1b[31m\x1b[1mNOT FOUND\x1b[0m"
+	      print(str.format(str, v))
+	  else
+	      str = " -> looking for \x1b[33m\x1b[1m%s\x1b[0m.. \x1b[32m\x1b[1mFOUND\x1b[0m"
+	      print(str.format(str, v))
+	  end
+      end
+  else
+      print("=> \x1b[31m\x1b[1mCONFIG ERROR:\x1b[0m \x1b[33m\x1b[1mconfig.directories\x1b[0m is expected to be a table")
   end
 end
 
 -- check if user is root
 if environ["USER"] ~= "root" then
-  print("=> \x1b[1m\x1b[31merror:\x1b[0m nvault requires root to run")
+  print("=> \x1b[1m\x1b[31mERROR:\x1b[0m nvault requires root to run")
   os.exit(1)
 end
+
 parse_config()
